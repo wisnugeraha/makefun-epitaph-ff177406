@@ -17,5 +17,20 @@ def chisel(line: str) -> None:
         fh.write(line)
 
 
+def audit() -> tuple[int, int]:
+    """read the stone back; confirm bytes vs the carver's cap."""
+    with open(OUT, "rb") as fh:
+        raw = fh.read()
+    return len(raw), len(raw.decode("utf-8"))
+
+
+def report() -> None:
+    size, chars = audit()
+    banner = "engraving sealed" if chars <= STONE_LIMIT else "OVER CAP"
+    print(f"{banner}: {chars} chars / {size} bytes, cap {STONE_LIMIT}")
+    print(f"stone reads: {open(OUT, encoding='utf-8').read()!r}")
+
+
 if __name__ == "__main__":
     chisel(carve())
+    report()
